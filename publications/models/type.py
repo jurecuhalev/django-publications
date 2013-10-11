@@ -13,7 +13,7 @@ class Type(OrderedModel):
 
 	type = models.CharField(max_length=128)
 	description = models.CharField(max_length=128)
-	bibtex_types = models.CharField(max_length=256, default='article',
+	bibtex_types = models.TextField(default='article',
 			verbose_name='BibTex types',
 			help_text='Possible BibTex types, separated by comma.')
 	hidden = models.BooleanField(

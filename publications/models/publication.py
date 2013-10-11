@@ -6,6 +6,7 @@ __docformat__ = 'epytext'
 
 from django.db import models
 from django.utils.http import urlquote_plus
+from django.contrib.auth.models import User
 from string import split, strip, join, replace, ascii_uppercase
 from publications.fields import PagesField
 from publications.models import Type
@@ -57,16 +58,16 @@ class Publication(models.Model):
 	year = models.PositiveIntegerField(max_length=4)
 	month = models.IntegerField(choices=MONTH_CHOICES, blank=True, null=True)
 	journal = models.CharField(max_length=256, blank=True)
-	book_title = models.CharField(max_length=256, blank=True)
+	book_title = models.TextField(blank=True)
 	publisher = models.CharField(max_length=256, blank=True)
 	institution = models.CharField(max_length=256, blank=True)
 	volume = models.IntegerField(blank=True, null=True)
 	number = models.IntegerField(blank=True, null=True, verbose_name='Issue number')
 	pages = PagesField(max_length=32, blank=True)
-	note = models.CharField(max_length=256, blank=True)
-	keywords = models.CharField(max_length=256, blank=True,
+	note = models.TextField(blank=True)
+	keywords = models.TextField(blank=True,
 		help_text='List of keywords separated by commas.')
-	url = models.URLField(blank=True, verbose_name='URL',
+	url = models.TextField(blank=True, verbose_name='URL',
 		help_text='Link to PDF or journal page.')
 	code = models.URLField(blank=True,
 		help_text='Link to page with code.')
@@ -77,6 +78,27 @@ class Publication(models.Model):
 	abstract = models.TextField(blank=True)
 	isbn = models.CharField(max_length=32, verbose_name="ISBN", blank=True,
 		help_text='Only for a book.') # A-B-C-D
+
+	# GGP specific import fields
+	timestamp = models.DateField()
+	owner = models.CharField(max_length=64, default='admin')
+	owner_user = models.ForeignKey(User, null=True, related_name='publication_owner_user')
+	user = models.ForeignKey(User, null=True, related_name="publication_user")
+
+	language = models.CharField(max_length=255, blank=True)
+	editor = models.CharField(max_length=255, blank=True)
+	address = models.CharField(max_length=255, blank=True)
+	organization = models.CharField(max_length=255, blank=True)
+	volume = models.CharField(max_length=255, blank=True)
+	number = models.CharField(max_length=255, blank=True)
+	series = models.CharField(max_length=255, blank=True)
+	edition = models.CharField(max_length=255, blank=True)
+	chapter = models.CharField(max_length=255, blank=True)
+
+	school = models.CharField(max_length=255, blank=True)
+	howpublished = models.CharField(max_length=255, blank=True)
+	issn = models.CharField(max_length=255, blank=True)
+	comment = models.TextField(blank=True)
 
 	def __init__(self, *args, **kwargs):
 		models.Model.__init__(self, *args, **kwargs)
@@ -89,21 +111,24 @@ class Publication(models.Model):
 		self.keywords = [strip(s).lower() for s in split(self.keywords, ',')]
 		self.keywords = join(self.keywords, ', ').lower()
 
-		# post-process author names
-		self.authors = replace(self.authors, ', and ', ', ')
-		self.authors = replace(self.authors, ',and ', ', ')
-		self.authors = replace(self.authors, ' and ', ', ')
-		self.authors = replace(self.authors, ';', ',')
+		# tests if title already ends with a punctuation mark
+		self.title_ends_with_punct = self.title[-1] in ['.', '!', '?'] \
+			if len(self.title) > 0 else False
+
+		# # post-process author names
+		authors = self.authors
+		authors = replace(authors, ', and ', ', ')
+		authors = replace(authors, ',and ', ', ')
+		authors = replace(authors, ' and ', ', ')
+		authors = replace(authors, ';', ',')
 
 		# list of authors
-		self.authors_list = [strip(author) for author in split(self.authors, ',')]
+		self.authors_list = [strip(author) for author in split(authors, ',')]
 
 		# simplified representation of author names
 		self.authors_list_simple = []
 
-		# tests if title already ends with a punctuation mark
-		self.title_ends_with_punct = self.title[-1] in ['.', '!', '?'] \
-			if len(self.title) > 0 else False
+
 
 		suffixes = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', "Jr.", "Sr."]
 		prefixes = ['Dr.']
@@ -158,18 +183,22 @@ class Publication(models.Model):
 				else:
 					self.authors_list_simple.append(self.simplify_name(names[0]))
 
-		# list of authors in BibTex format
-		self.authors_bibtex = join(self.authors_list, ' and ')
+		# Do not normalize strings as we already imported them in Bibtex format
 
-		# overwrite authors string
-		if len(self.authors_list) > 2:
-			self.authors = join([
-				join(self.authors_list[:-1], ', '),
-				self.authors_list[-1]], ', and ')
-		elif len(self.authors_list) > 1:
-			self.authors = join(self.authors_list, ' and ')
-		else:
-			self.authors = self.authors_list[0]
+		# # list of authors in BibTex format
+		# # self.authors_bibtex = join(self.authors_list, ' and ')
+
+		# # overwrite authors string
+		# if len(self.authors_list) > 2:
+		# 	self.authors = join([
+		# 		join(self.authors_list[:-1], ', '),
+		# 		self.authors_list[-1]], ', and ')
+		# elif len(self.authors_list) > 1:
+		# 	self.authors = join(self.authors_list, ' and ')
+		# else:
+		# 	self.authors = self.authors_list[0]
+
+		self.authors_bibtex = self.authors
 
 
 	def __unicode__(self):

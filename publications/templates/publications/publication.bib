@@ -1,18 +1,31 @@
 @{{ publication.type.bibtex_type }}{% templatetag openbrace %}{% if publication.citekey %}{{ publication.citekey }}{% else %}{{ publication.key }}{% endif %},
-  author = "{{ publication.authors_bibtex }}",
+  author = "{{ publication.authors }}",
   title = "{{ publication.title }}",
   year = {{ publication.year }}{% if publication.journal %},
   journal = "{{ publication.journal }}"{% endif %}{% if publication.book_title %},
   booktitle = "{{ publication.book_title }}"{% endif %}{% if publication.publisher %},
   publisher = "{{ publication.publisher }}"{% endif %}{% if publication.volume %},
-  volume = {{ publication.volume }}{% endif %}{% if publication.institution %},
-  institution = {{ publication.institution }}{% endif %}{% if publication.number %},
-  number = {{ publication.number }}{% endif %}{% if publication.pages %},
+  volume = "{{ publication.volume }}"{% endif %}{% if publication.institution %},
+  institution = "{{ publication.institution }}"{% endif %}{% if publication.number %},
+  number = "{{ publication.number }}"{% endif %}{% if publication.pages %},
   pages = "{{ publication.pages }}"{% endif %}{% if publication.month_bibtex %},
   month = "{{ publication.month_bibtex }}"{% endif %}{% if publication.keywords %},
   keywords = "{{ publication.keywords }}"{% endif %}{% if publication.doi %},
   doi = "{{ publication.doi }}"{% endif %}{% if publication.url %},
   url = "{{ publication.url }}"{% endif %}{% if publication.note %},
   note = "{{ publication.note }}"{% endif %}{% if publication.isbn %},
-  isbn = "{{ publication.isbn }}"{% endif %}
+  isbn = "{{ publication.isbn }}"{% endif %}{% if publication.timestamp %}
+  timestamp = "{{ publication.timestamp|date:"d.m.Y" }}"{% endif %}{% if publication.owner %} 
+  owner = "{{ publication.owner }}"{% endif %}{% if publication.language %} 
+  language = "{{ publication.language }}"{% endif %}{% if publication.editor %} 
+  editor = "{{ publication.editor }}"{% endif %}{% if publication.address %} 
+  address = "{{ publication.address }}"{% endif %}{% if publication.organization %} 
+  organization = "{{ publication.organization }}"{% endif %}{% if publication.school %} 
+  school = "{{ publication.school }}"{% endif %}{% if publication.chapter %} 
+  chapter = "{{ publication.chapter }}"{% endif %}{% if publication.howpublished %} 
+  howpublished = "{{ publication.howpublished }}"{% endif %}{% if publication.issn %} 
+  issn = "{{ publication.issn }}"{% endif %}{% if publication.comment %} 
+  comment = "{{ publication.comment }}"{% endif %}{% if publication.series %} 
+  series = "{{ publication.series }}"{% endif %}{% if publication.edition %} 
+  edition = "{{ publication.edition }}"{% endif %}
 }

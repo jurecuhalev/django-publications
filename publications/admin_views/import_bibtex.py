@@ -10,6 +10,8 @@ from django.http import HttpResponseRedirect
 from publications.bibtex import parse
 from publications.models import Publication, Type
 from string import split, join
+from datetime import datetime
+from pprint import pprint
 
 # mapping of months
 MONTHS = {
@@ -26,96 +28,20 @@ MONTHS = {
 	'nov': 11, 'november': 11,
 	'dec': 12, 'december': 12}
 
+
 def import_bibtex(request):
 	if request.method == 'POST':
-		# try to parse BibTex
-		bib = parse(request.POST['bibliography'])
-
-		# container for error messages
 		errors = {}
 
-		# publication types
-		types = Type.objects.all()
+		# try to parse BibTex
+		bib = parse(request.POST['bibliography'])
 
 		# check for errors
 		if not bib:
 			if not request.POST['bibliography']:
 				errors['bibliography'] = 'This field is required.'
 
-		if not errors:
-			publications = []
-
-			# try adding publications
-			for entry in bib:
-				if entry.has_key('title') and \
-				   entry.has_key('author') and \
-				   entry.has_key('year'):
-					# parse authors
-					authors = split(entry['author'], ' and ')
-					for i in range(len(authors)):
-						author = split(authors[i], ',')
-						author = [author[-1]] + author[:-1]
-						authors[i] = join(author, ' ')
-					authors = join(authors, ', ')
-
-					# add missing keys
-					keys = [
-						'journal',
-						'booktitle',
-						'publisher',
-						'institution',
-						'url',
-						'doi',
-						'isbn',
-						'keywords',
-						'note',
-						'abstract',
-						'month']
-
-					for key in keys:
-						if not entry.has_key(key):
-							entry[key] = ''
-
-					# map integer fields to integers
-					entry['month'] = MONTHS.get(entry['month'].lower(), 0)
-					entry['volume'] = entry.get('volume', None)
-					entry['number'] = entry.get('number', None)
-
-					# determine type
-					type_id = None
-
-					for t in types:
-						if entry['type'] in t.bibtex_type_list:
-							type_id = t.id
-							break
-
-					if type_id is None:
-						errors['bibliography'] = 'Type "' + entry['type'] + '" unknown.'
-						break
-
-					# add publication
-					publications.append(Publication(
-						type_id=type_id,
-						citekey=entry['key'],
-						title=entry['title'],
-						authors=authors,
-						year=entry['year'],
-						month=entry['month'],
-						journal=entry['journal'],
-						book_title=entry['booktitle'],
-						publisher=entry['publisher'],
-						institution=entry['institution'],
-						volume=entry['volume'],
-						number=entry['number'],
-						note=entry['note'],
-						url=entry['url'],
-						doi=entry['doi'],
-						isbn=entry['isbn'],
-						abstract=entry['abstract'],
-						keywords=entry['keywords']))
-				else:
-					errors['bibliography'] = 'Make sure that the keys title, author and year are present.'
-					break
+		errors, publications = import_bibtex_utility(bib)
 
 		if not errors and not publications:
 			errors['bibliography'] = 'No valid BibTex entries found.'
@@ -154,5 +80,148 @@ def import_bibtex(request):
 				'types': Type.objects.all(),
 				'request': request},
 			RequestContext(request))
+
+def import_bibtex_utility(bib):
+		# container for error messages
+		errors = {}
+
+		# publication types
+		types = Type.objects.all()
+
+		if not errors:
+			publications = []
+
+			# try adding publications
+			for entry in bib:
+				if entry.has_key('title') and \
+				   entry.has_key('year'):
+					# parse authors
+					if not entry.has_key('author'):
+						entry['author'] = ''
+
+					authors = entry['author']
+					# authors = split(entry['author'], ' and ')
+					# for i in range(len(authors)):
+					# 	author = split(authors[i], ',')
+					# 	author = [author[-1]] + author[:-1]
+					# 	authors[i] = join(author, ' ')
+					# authors = join(authors, ', ')
+
+					if entry.has_key('timestamp'):
+						try:
+							timestamp = datetime.strptime(entry['timestamp'], "%d.%m.%Y")
+						except ValueError:
+							timestamp = datetime.strptime(entry['timestamp'], "%Y.%m.%d")
+					else:
+						timestamp = datetime.now()
+
+					# add missing keys
+					keys = [
+						'journal',
+						'booktitle',
+						'publisher',
+						'institution',
+						'url',
+						'doi',
+						'isbn',
+						'keywords',
+						'note',
+						'abstract',
+						'month',
+						'volume',
+						'number',
+						'owner',
+						'language',
+						'editor',
+						'pages',
+						'address',
+						'organization',
+						'volume',
+						'number',
+						'school',
+						'chapter',
+						'howpublished',
+						'issn',
+						'comment',
+						'series',
+						'edition'						
+						]
+
+					for key in keys:
+						if not entry.has_key(key):
+							entry[key] = ''
+
+					# map integer fields to integers
+					if entry['month']:
+						if MONTHS.get(entry['month'].lower(), 0):
+							entry['month'] = MONTHS.get(entry['month'].lower(), 0)
+						else:
+							input_text = entry['month'].lower()
+							for month_name in MONTHS:
+								if input_text.find(month_name) >= 0:
+									entry['month'] = MONTHS.get(month_name)
+									break
+					if type(0) != type(entry['month']):
+						entry['month'] = 0
+
+					# entry['month'] = MONTHS.get(entry['month'].lower(), 0)
+					entry['volume'] = entry.get('volume', None)
+					entry['number'] = entry.get('number', None)
+
+					# determine type
+					type_id = None
+
+					for t in types:
+						entry['type'] = entry['type'].lower()
+						if entry['type'] in t.bibtex_type_list:
+							type_id = t.id
+							break
+
+					if type_id is None:
+						errors['bibliography'] = 'Type "' + entry['type'] + '" in @' + entry['key'] +' unknown.'
+						break
+
+					# add publication
+					publications.append(Publication(
+						type_id=type_id,
+						citekey=entry['key'],
+						title=entry['title'],
+						authors=authors,
+						year=entry['year'],
+						month=entry['month'],
+						journal=entry['journal'],
+						book_title=entry['booktitle'],
+						publisher=entry['publisher'],
+						institution=entry['institution'],
+						volume=entry['volume'],
+						number=entry['number'],
+						note=entry['note'],
+						url=entry['url'],
+						doi=entry['doi'],
+						isbn=entry['isbn'],
+						abstract=entry['abstract'],
+						keywords=entry['keywords'],
+						timestamp=timestamp,
+						owner=entry['owner'],
+						language=entry['language'],
+						editor=entry['editor'],
+						pages=entry['pages'],
+						address=entry['address'],
+						organization=entry['organization'],
+						school=entry['school'],
+						chapter=entry['chapter'],
+						howpublished=entry['howpublished'],
+						issn=entry['issn'],
+						comment=entry['comment'],
+						series=entry['series'],
+						edition=entry['edition']
+						)
+					)
+				else:
+					pprint(entry)
+					errors['bibliography'] = 'Make sure that the keys title, author and year are present.'
+					break
+
+		return errors, publications
 
 import_bibtex = staff_member_required(import_bibtex)

@@ -6,7 +6,7 @@
 			"order": 0,
 			"type": "Journal",
 			"description": "Journal Articles",
-			"bibtex_types": "article",
+			"bibtex_types": "article, stockholm research reports in demography, reference paper, report, discussion paper, Thèse de Doctorat de Démographie, policy brief",
 			"hidden": 0
 		}
 	},
@@ -17,7 +17,7 @@
 			"order": 1,
 			"type": "Conference",
 			"description": "Conference Papers",
-			"bibtex_types": "inproceedings, conference",
+			"bibtex_types": "inproceedings, conference, conference paper, booklet",
 			"hidden": 0
 		}
 	},
@@ -28,7 +28,7 @@
 			"order": 2,
 			"type": "Technical Report",
 			"description": "Technical Reports",
-			"bibtex_types": "techreport",
+			"bibtex_types": "techreport, working paper, iza discussion paper series, Dokumentasjonsrapport [Field report - Norwegian version], brochure, mpidr working paper, expertise, multilinks deliverable, lietuvos socialiniy tyrimy centras, esrc centre for population change working paper",
 			"hidden": 0
 		}
 	},
@@ -39,7 +39,7 @@
 			"order": 3,
 			"type": "Book",
 			"description": "Books",
-			"bibtex_types": "book",
+			"bibtex_types": "book, ru series c",
 			"hidden": 0
 		}
 	},
@@ -72,7 +72,7 @@
 			"order": 6,
 			"type": "Thesis",
 			"description": "Theses",
-			"bibtex_types": "phdthesis, mastersthesis",
+			"bibtex_types": "phdthesis, mastersthesis, masterarbeit im fach soziologie und empirische sozialforschung",
 			"hidden": 1
 		}
 	},
@@ -85,6 +85,28 @@
 			"description": "Unpublished Papers",
 			"bibtex_types": "unpublished",
 			"hidden": 1
+		}
+	},
+	{
+	"model": "publications.type",
+	"pk": 9,
+		"fields": {
+			"order": 8,
+			"type": "Incollection",
+			"description": "In collection",
+			"bibtex_types": "incollection, periodical",
+			"hidden": 0
+		}
+	},
+	{
+	"model": "publications.type",
+	"pk": 10,
+		"fields": {
+			"order": 9,
+			"type": "Misc",
+			"description": "Misc",
+			"bibtex_types": "misc",
+			"hidden": 0
 		}
 	}
 ]
