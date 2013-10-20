@@ -49,14 +49,16 @@ class Publication(models.Model):
 			12: 'Dec'
 		}
 
+	YEAR_CHOICES = [ (i,i) for i in range(2005, 2021) ]
+
 	type = models.ForeignKey(Type)
 	citekey = models.CharField(max_length=512, blank=True, null=True,
 		help_text='BibTex citation key. Leave blank if unsure.')
-	title = models.CharField(max_length=512)
+	title = models.CharField(max_length=512, verbose_name=u'Publication Title')
 	authors = models.CharField(max_length=2048,
 		help_text='List of authors separated by commas or <i>and</i>.')
-	year = models.PositiveIntegerField(max_length=4)
-	month = models.IntegerField(choices=MONTH_CHOICES, blank=True, null=True)
+	year = models.PositiveIntegerField(max_length=4, verbose_name=u'Year of Publication', choices=YEAR_CHOICES)
+	month = models.IntegerField(choices=MONTH_CHOICES, blank=True, null=True, verbose_name=u'Month of Publication')
 	journal = models.CharField(max_length=256, blank=True)
 	book_title = models.TextField(blank=True)
 	publisher = models.CharField(max_length=256, blank=True)
@@ -80,10 +82,10 @@ class Publication(models.Model):
 		help_text='Only for a book.') # A-B-C-D
 
 	# GGP specific import fields
-	timestamp = models.DateField()
-	owner = models.CharField(max_length=64, default='admin')
-	owner_user = models.ForeignKey(User, null=True, related_name='publication_owner_user')
-	user = models.ForeignKey(User, null=True, related_name="publication_user")
+	timestamp = models.DateField(auto_now_add=True)
+	owner = models.CharField(max_length=64, blank=True, null=True, default='admin')
+	owner_user = models.ForeignKey(User, blank=True, null=True, related_name='publication_owner_user')
+	user = models.ForeignKey(User, blank=True, null=True, related_name="publication_user")
 
 	language = models.CharField(max_length=255, blank=True)
 	editor = models.CharField(max_length=255, blank=True)
@@ -279,3 +281,6 @@ class Publication(models.Model):
 		name = replace(name, u'ü', u'ue')
 		name = replace(name, u'ß', u'ss')
 		return name
+
+	def get_absolute_url(self):
+		return '/form/publications/%s/' % self.id

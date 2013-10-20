@@ -23,9 +23,6 @@ class PublicationAdmin(admin.ModelAdmin):
 	change_list_template = 'admin/publications/change_list.html'
 	search_fields = ('title', 'journal', 'authors', 'keywords', 'year', 'citekey')
 	fieldsets = (
-		('GGP Specific fields', {'fields':
-			('timestamp', 'owner', 'language', 'editor', 'address', 'organization',
-			'school', 'chapter', 'howpublished', 'issn', 'comment', 'series', 'edition')}),
 		(None, {'fields': 
 			('type', 'title', 'authors', 'year', 'month')}),
 		(None, {'fields': 
@@ -34,5 +31,9 @@ class PublicationAdmin(admin.ModelAdmin):
 			('citekey', 'keywords', 'url', 'code', 'pdf', 'doi', 'isbn', 'note', 'external')}),
 		(None, {'fields':
 			('abstract',)}),
+		('GGP Specific fields', {'fields':
+			('owner', 'language', 'editor', 'address', 'organization',
+			'school', 'chapter', 'howpublished', 'issn', 'comment', 'series', 'edition', 'user')}),
 	)
+	raw_id_fields = ('user',)
 	inlines = [CustomLinkInline, CustomFileInline]
