@@ -21,14 +21,14 @@
 {% endif %}
 {% if publication.keywords %}
 	{% for keyword, keyword_escaped in publication.keywords_escaped %}
-		{% if keyword_escaped %}<a class="keyword" href="{% url 'publications:keyword' keyword_escaped %}">{{ keyword }}</a>{% endif %}
+		{% if keyword_escaped %}<a class="keyword" href="{% url 'publications:keyword' keyword_escaped %}" target="_blank">{{ keyword }}</a>{% endif %}
 	{% endfor %}
 	<br />
 {% endif %}
-{% if publication.code %}<a class="link" href="{{ publication.code }}">Code</a>,{% endif %}
-{% if publication.url %}<a class="link" rel="external" href="{{ publication.url }}">URL</a>,{% endif %}
-{% if publication.doi %}<a class="link" rel="external" href="http://dx.doi.org/{{ publication.doi }}">DOI</a>,{% endif %}
-{% if not publication.journal and publication.isbn %}<a class="link" rel="external" href="http://isbndb.com/search/all?query={{ publication.isbn }}">ISBN</a>,{% endif %}
+{% if publication.code %}<a class="link" href="{{ publication.code }}" target="_blank">Code</a>,{% endif %}
+{% if publication.url %}<a class="link" rel="external" href="{{ publication.url }}" target="_blank">URL</a>,{% endif %}
+{% if publication.doi %}<a class="link" rel="external" href="http://dx.doi.org/{{ publication.doi }}" target="_blank">DOI</a>,{% endif %}
+{% if not publication.journal and publication.isbn %}<a class="link" rel="external" href="http://isbndb.com/search/all?query={{ publication.isbn }}" target="_blank">ISBN</a>,{% endif %}
 {% if publication.pdf %}<a class="link" href="{{ MEDIA_URL }}{{ publication.pdf }}">PDF</a>,{% endif %}
 {% for file in publication.files %}
 	<a class="link" href="{{ MEDIA_URL }}{{ file.file }}">{{ file.description }}</a>,
