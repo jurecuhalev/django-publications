@@ -51,6 +51,12 @@ class Publication(models.Model):
 
 	YEAR_CHOICES = [ (i,i) for i in range(2005, 2021) ]
 
+	STATE_CHOICES = (
+		(0, 'Needs review'),
+		(1, 'Reviewed and published'),
+		(2, 'Removed')
+	)
+
 	type = models.ForeignKey(Type)
 	citekey = models.CharField(max_length=512, blank=True, null=True,
 		help_text='BibTex citation key. Leave blank if unsure.')
@@ -89,7 +95,7 @@ class Publication(models.Model):
 
 	language = models.CharField(max_length=255, blank=True)
 	editor = models.CharField(max_length=255, blank=True)
-	address = models.CharField(max_length=255, blank=True)
+	address = models.CharField(max_length=255, blank=True, verbose_name=u'Published address')
 	organization = models.CharField(max_length=255, blank=True)
 	volume = models.CharField(max_length=255, blank=True)
 	number = models.CharField(max_length=255, blank=True)
@@ -98,9 +104,11 @@ class Publication(models.Model):
 	chapter = models.CharField(max_length=255, blank=True)
 
 	school = models.CharField(max_length=255, blank=True)
-	howpublished = models.CharField(max_length=255, blank=True)
+	howpublished = models.CharField(max_length=255, blank=True, verbose_name=u'How is it published?')
 	issn = models.CharField(max_length=255, blank=True)
 	comment = models.TextField(blank=True)
+
+	state = models.IntegerField(max_length=5, blank=True, null=True, default=0, choices=STATE_CHOICES)
 
 	def __init__(self, *args, **kwargs):
 		models.Model.__init__(self, *args, **kwargs)

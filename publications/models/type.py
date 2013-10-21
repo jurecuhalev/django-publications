@@ -20,8 +20,7 @@ class Type(OrderedModel):
 		help_text='Hide publications from main view.')
 
 	def __unicode__(self):
-		return self.type
-
+		return "%s (%s)"  % (self.type, self.description)
 
 	def __init__(self, *args, **kwargs):
 		OrderedModel.__init__(self, *args, **kwargs)
