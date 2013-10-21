@@ -125,27 +125,29 @@ class Publication(models.Model):
 		self.title_ends_with_punct = self.title[-1] in ['.', '!', '?'] \
 			if len(self.title) > 0 else False
 
+		self.authors_bibtex = self.authors
+		self.authors_list = self.get_authors_list(self.authors)
+
+	@staticmethod
+	def get_authors_list(authors):
 		# # post-process author names
-		authors = self.authors
 		authors = replace(authors, ', and ', ', ')
 		authors = replace(authors, ',and ', ', ')
 		authors = replace(authors, ' and ', ', ')
 		authors = replace(authors, ';', ',')
 
 		# list of authors
-		self.authors_list = [strip(author) for author in split(authors, ',')]
+		authors_list = [strip(author) for author in split(authors, ',')]
 
 		# simplified representation of author names
-		self.authors_list_simple = []
-
-
+		authors_list_simple = []
 
 		suffixes = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', "Jr.", "Sr."]
 		prefixes = ['Dr.']
 		prepositions = ['van', 'von', 'der', 'de', 'den']
 
 		# further post-process author names
-		for i, author in enumerate(self.authors_list):
+		for i, author in enumerate(authors_list):
 			if author == '':
 				continue
 
@@ -183,15 +185,17 @@ class Publication(models.Model):
 						names[j] = name[0] + '.'
 
 			if len(names):
-				self.authors_list[i] = join(names, ' ')
+				authors_list[i] = join(names, ' ')
 
 				# create simplified/normalized representation of author name
 				if len(names) > 1:
 					for name in names[0].split('-'):
-						name_simple = self.simplify_name(join([name, names[-1]], ' '))
-						self.authors_list_simple.append(name_simple)
+						name_simple = Publication.simplify_name(join([name, names[-1]], ' '))
+						authors_list_simple.append(name_simple)
 				else:
-					self.authors_list_simple.append(self.simplify_name(names[0]))
+					authors_list_simple.append(Publication.simplify_name(names[0]))
+
+		return authors_list
 
 		# Do not normalize strings as we already imported them in Bibtex format
 
@@ -207,8 +211,6 @@ class Publication(models.Model):
 		# 	self.authors = join(self.authors_list, ' and ')
 		# else:
 		# 	self.authors = self.authors_list[0]
-
-		self.authors_bibtex = self.authors
 
 
 	def __unicode__(self):
@@ -235,7 +237,9 @@ class Publication(models.Model):
 
 	def key(self):
 		# this publication's first author
-		author_lastname = self.authors_list[0].split(' ')[-1]
+		authors_list = self.get_authors_list(self.authors)
+		
+		author_lastname = authors_list[0].split(' ')[-1]
 
 		publications = Publication.objects.filter(
 			year=self.year,
@@ -248,10 +252,11 @@ class Publication(models.Model):
 		for publication in publications:
 			if publication == self:
 				break
+
 			if publication.authors_list[0].split(' ')[-1] == author_lastname:
 				char += 1
 
-		return self.authors_list[0].split(' ')[-1] + str(self.year) + chr(char)
+		return authors_list[0].split(' ')[-1] + str(self.year) + chr(char)
 
 
 	def month_bibtex(self):
@@ -279,7 +284,6 @@ class Publication(models.Model):
 	def clean(self):
 		if not self.citekey:
 			self.citekey = self.key()
-
 
 	@staticmethod
 	def simplify_name(name):
