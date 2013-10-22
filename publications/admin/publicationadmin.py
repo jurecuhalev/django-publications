@@ -18,7 +18,7 @@ class CustomFileInline(admin.StackedInline):
 
 
 class PublicationAdmin(admin.ModelAdmin):
-	list_display = ('citekey', 'type', 'first_author', 'title', 'type', 'year', 'journal_or_book_title')
+	list_display = ('id', 'citekey', 'type', 'first_author', 'title', 'type', 'year', 'journal_or_book_title')
 	list_display_links = ('title',)
 	change_list_template = 'admin/publications/change_list.html'
 	search_fields = ('title', 'journal', 'authors', 'keywords', 'year', 'citekey')
@@ -33,7 +33,7 @@ class PublicationAdmin(admin.ModelAdmin):
 			('abstract',)}),
 		('GGP Specific fields', {'fields':
 			('owner', 'language', 'editor', 'address', 'organization',
-			'school', 'chapter', 'howpublished', 'issn', 'comment', 'series', 'edition', 'user')}),
+			'school', 'chapter', 'howpublished', 'issn', 'comment', 'series', 'edition', 'user', 'state')}),
 	)
 	raw_id_fields = ('user',)
 	inlines = [CustomLinkInline, CustomFileInline]

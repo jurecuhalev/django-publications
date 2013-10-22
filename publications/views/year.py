@@ -15,7 +15,7 @@ def year(request, year=None):
 	publications = publications.order_by('-year', '-month', '-id')
 
 	for publication in publications:
-		if publication.type.hidden:
+		if publication.type.hidden or publication.state != 1:
 			continue
 		if not years or (years[-1][0] != publication.year):
 			years.append((publication.year, []))
