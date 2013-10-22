@@ -43,5 +43,6 @@ def year(request, year=None):
 			publication.files = publication.customfile_set.all()
 
 		return render_to_response('publications/years.html', {
-				'years': years
+				'years': years,
+				'count': publications.count(),
 			}, context_instance=RequestContext(request))

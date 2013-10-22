@@ -6,10 +6,22 @@
 {% endblock %}
 
 {% block content %}
+
 	<div class="special_links">
+		Other formats:
 		<a href="?ascii">plain text</a>, 
 		<a href="?bibtex">BibTex</a>
 	</div>
+
+	<h2>All {{ count }} publications by year
+
+	<form method="GET" action="{% url 'bibtex_search' %}" style="float:right; ">
+		<input value="" name="q">
+		<input type="submit" value="Search">
+	</form>
+	</h2>
+
+	
 	{% for year, publications in years %}
 		<a href="/publications/year/{{ year }}/"><h1>{{ year }}</h1></a>
 		<hr/>
