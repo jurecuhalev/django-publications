@@ -127,9 +127,10 @@ class Publication(models.Model):
 
 		self.authors_bibtex = self.authors
 		self.authors_list = self.get_authors_list(self.authors)
+		self.authors_list_simple = self.get_authors_list(self.authors, simple=True)
 
 	@staticmethod
-	def get_authors_list(authors):
+	def get_authors_list(authors, simple=False):
 		# # post-process author names
 		authors = replace(authors, ', and ', ', ')
 		authors = replace(authors, ',and ', ', ')
@@ -194,8 +195,11 @@ class Publication(models.Model):
 						authors_list_simple.append(name_simple)
 				else:
 					authors_list_simple.append(Publication.simplify_name(names[0]))
-
-		return authors_list
+		
+		if simple:
+			return authors_list_simple
+		else:
+			return authors_list
 
 		# Do not normalize strings as we already imported them in Bibtex format
 
