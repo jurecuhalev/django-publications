@@ -1,8 +1,21 @@
 {% extends "base.html" %}
 
-{% block head %}
+{% block extrahead %}
 	{{ block.super }}
 	<link rel="alternate" type="application/rss+xml" title="RSS" href="?rss" />
+	<style type="text/css">
+	.abstract { display: none; }
+	.abstract-link { display: inline; }
+	</style>
+	<script type="text/javascript">
+	jQuery(document).ready(function($) {
+		$('.abstract-link').click(function() {
+			$(this).parent().find('.abstract').show();
+
+			return false;
+		});
+	});
+	</script>
 {% endblock %}
 
 {% block content %}

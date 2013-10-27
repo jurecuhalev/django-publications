@@ -27,5 +27,6 @@
   issn = "{{ publication.issn }}"{% endif %}{% if publication.comment %} 
   comment = "{{ publication.comment }}"{% endif %}{% if publication.series %} 
   series = "{{ publication.series }}"{% endif %}{% if publication.edition %} 
-  edition = "{{ publication.edition }}"{% endif %}
+  edition = "{{ publication.edition }}"{% endif %}{% if publication.abstract %}
+  abstract = "{{ publication.abstract }}"{% endif %}
 }
