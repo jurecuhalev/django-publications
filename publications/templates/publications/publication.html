@@ -1,5 +1,6 @@
 {% load publication_extras %}
 
+{% comment %}
 {% if publication.authors_escaped|length > 8 %}
 	{% for author, author_escaped in publication.authors_escaped|slice:":8" %}
 	{% if author_escaped %}<a href="{% url 'publications:person' author_escaped %}" class="author">{{ author }}</a>,{% endif %}
@@ -9,6 +10,8 @@
 	{% if author_escaped %}<a href="{% url 'publications:person' author_escaped %}" class="author">{{ author }}</a>{% endif %}{% if not forloop.last %}{% if forloop.revcounter == 2 %}{% if not forloop.first %},{% endif %} and {% else %}, {% endif %}{% endif %}
 	{% endfor %}<br />
 {% endif %}
+{% endcomment %}
+<div class="author">{{ publication.authors }}</div>
 <b><a href="{% url 'publications:view' publication.pk %}" class="title" target="_blank">{{ publication.title|tex_parse }}</a></b><br/>
 {% if publication.journal %}
 	<i>{{ publication.journal }}, {{ publication.year }}</i><br />
