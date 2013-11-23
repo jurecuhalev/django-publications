@@ -36,7 +36,7 @@
 {% for link in publication.links %}
 	<a class="link" rel="external" href="{{ link.url }}" target="_blank">{{ link.description }}</a>,
 {% endfor %}
-<a href="{% url 'publications:view' publication.pk %}?bibtex" target="_blank">BibTex</a>{% if publication.abstract %}, <a href="#" class="abstract-link">Abstract</a>{% endif %}
+<a href="{% url 'publications:view' publication.pk %}?bibtex" target="_blank">JabRef BibTex</a>{% if publication.abstract %}, <a href="#" class="abstract-link">Abstract</a>{% endif %}
 
 {% if publication.abstract %}
 	{% if exclude_abstract %}

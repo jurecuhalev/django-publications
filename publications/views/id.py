@@ -17,10 +17,14 @@ def id(request, publication_id):
 			}, context_instance=RequestContext(request), mimetype='text/plain; charset=UTF-8')
 
 	elif 'bibtex' in request.GET:
-		return render_to_response('publications/publications.bib', {
-				'publications': publications
-			}, context_instance=RequestContext(request), mimetype='text/x-bibtex; charset=UTF-8')
+		response = render_to_response('publications/publications.bib', {
+					'publications': publications
+					}, context_instance=RequestContext(request))
 
+		response['Content-Disposition'] = 'attachment; filename="ggp-single-bibliography.bib"'
+		response['Content-type'] = 'text/x-bibtex; charset=UTF-8'
+
+		return response
 	else:
 		for publication in publications:
 			publication.links = publication.customlink_set.all()

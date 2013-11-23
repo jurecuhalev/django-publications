@@ -30,9 +30,13 @@ def year(request, year=None):
 			}, context_instance=RequestContext(request), mimetype='text/plain; charset=UTF-8')
 
 	elif 'bibtex' in request.GET:
-		return render_to_response('publications/publications.bib', {
+		response = render_to_response('publications/publications.bib', {
 				'publications': sum([y[1] for y in years], [])
-			}, context_instance=RequestContext(request), mimetype='text/x-bibtex; charset=UTF-8')
+			}, context_instance=RequestContext(request))
+		response['Content-Disposition'] = 'attachment; filename="ggp-bibliography.bib"'
+		response['Content-type'] = 'text/x-bibtex; charset=UTF-8'
+
+		return response
 
 	elif 'rss' in request.GET:
 		return render_to_response('publications/publications.rss', {
