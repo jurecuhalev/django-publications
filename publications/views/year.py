@@ -6,6 +6,9 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from publications.models import Type, Publication
 
+from django.views.decorators.cache import cache_page
+
+@cache_page(60*60*24)
 def year(request, year=None):
 	years = []
 	if year:

@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "base.html" %}{% load staticfiles %}
 
 {% block extrahead %}
 	{{ block.super }}
@@ -7,15 +7,7 @@
 	.abstract { display: none; }
 	.abstract-link { display: inline; }
 	</style>
-	<script type="text/javascript">
-	jQuery(document).ready(function($) {
-		$('.abstract-link').click(function() {
-			$(this).parent().find('.abstract').show();
-
-			return false;
-		});
-	});
-	</script>
+	<script src="{% static 'js/publications.js' %}" type="text/javascript"></script>
 {% endblock %}
 
 {% block content %}
@@ -34,14 +26,15 @@
 	</form>
 	</h2>
 
-	
 	{% for year, publications in years %}
-		<a href="/publications/year/{{ year }}/"><h1>{{ year }}</h1></a>
+		<a href="/form/publications/year/{{ year }}/"><h1>{{ year }}</h1></a>
 		<hr/>
 		<div{% if not forloop.last %} style="margin-bottom: 30px;"{% endif %}>
 		{% for publication in publications %}
 			<div{% if not forloop.last %} style="margin-bottom: 20px;"{% endif %}>
-				{% include "publications/publication.html" %}
+				{% with exclude_abstract=True %}
+					{% include "publications/publication.html" %}
+				{% endwith %}
 			</div>
 		{% endfor %}
 		</div>

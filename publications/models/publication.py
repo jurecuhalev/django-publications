@@ -4,12 +4,21 @@ __license__ = 'MIT License <http://www.opensource.org/licenses/mit-license.php>'
 __author__ = 'Lucas Theis <lucas@theis.io>'
 __docformat__ = 'epytext'
 
-from django.db import models
+from django.db import models, connections, transaction
+from django.db.models.signals import post_save
 from django.utils.http import urlquote_plus
 from django.contrib.auth.models import User
+from django.core.cache import cache
+
 from string import split, strip, join, replace, ascii_uppercase
 from publications.fields import PagesField
 from publications.models import Type
+
+
+def _clear_page_cache(sender, instance, **kwargs):
+	cursor = connections['default'].cursor()
+	cursor.execute('DELETE FROM cache')
+	transaction.commit_unless_managed(using='default')
 
 class Publication(models.Model):
 	class Meta:
@@ -300,3 +309,5 @@ class Publication(models.Model):
 
 	def get_absolute_url(self):
 		return '/form/publications/%s/' % self.id
+
+post_save.connect(_clear_page_cache, sender=Publication, dispatch_uid='publication_postsave_clear_cache')

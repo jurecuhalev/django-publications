@@ -5,6 +5,7 @@ __docformat__ = 'epytext'
 from django.conf.urls import patterns, include, url
 
 urlpatterns = patterns('',
+	url(r'^(?P<publication_id>\d+)/abstract/$', 'publications.views.id.abstract', name='abstract'),
 	url(r'^(?P<publication_id>\d+)/$', 'publications.views.id', name='view'),
 	url(r'^year/(?P<year>\d+)/$', 'publications.views.year', name='year'),
 	url(r'^tag/(?P<keyword>.+)/$', 'publications.views.keyword', name='keyword'),

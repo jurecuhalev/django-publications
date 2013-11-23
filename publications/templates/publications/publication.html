@@ -39,7 +39,11 @@
 <a href="{% url 'publications:view' publication.pk %}?bibtex" target="_blank">BibTex</a>{% if publication.abstract %}, <a href="#" class="abstract-link">Abstract</a>{% endif %}
 
 {% if publication.abstract %}
-<div class="abstract">
-	{{ publication.abstract }}
-</div>
+	{% if exclude_abstract %}
+		<div class="abstract" data-abstract-id="{{ publication.id }}"></div>
+	{% else %}
+		<div class="abstract">
+			{{ publication.abstract }}
+		</div>
+	{% endif %}
 {% endif %}
