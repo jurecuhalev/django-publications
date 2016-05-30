@@ -15,10 +15,10 @@ from publications.fields import PagesField
 from publications.models import Type
 
 
-def _clear_page_cache(sender, instance, **kwargs):
-	cursor = connections['default'].cursor()
-	cursor.execute('DELETE FROM cache')
-	transaction.commit_unless_managed(using='default')
+# def _clear_page_cache(sender, instance, **kwargs):
+# 	cursor = connections['default'].cursor()
+# 	cursor.execute('DELETE FROM cache')
+# 	transaction.commit_unless_managed(using='default')
 
 class Publication(models.Model):
 	class Meta:
@@ -310,4 +310,4 @@ class Publication(models.Model):
 	def get_absolute_url(self):
 		return '/form/publications/%s/' % self.id
 
-post_save.connect(_clear_page_cache, sender=Publication, dispatch_uid='publication_postsave_clear_cache')
+# post_save.connect(_clear_page_cache, sender=Publication, dispatch_uid='publication_postsave_clear_cache')
