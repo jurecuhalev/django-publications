@@ -58,7 +58,7 @@ class Publication(models.Model):
         12: 'Dec'
     }
 
-    YEAR_CHOICES = [(i, i) for i in range(2005, 2021)]
+    YEAR_CHOICES = [(i, i) for i in range(2005, 2024)]
 
     STATE_CHOICES = (
         (0, 'Needs review'),
