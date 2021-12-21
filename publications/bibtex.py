@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from __future__ import unicode_literals
 
 __license__ = 'MIT License <http://www.opensource.org/licenses/mit-license.php>'
 __author__ = 'Lucas Theis <lucas@theis.io>'
@@ -28,18 +29,25 @@ special_chars = (
 	(r'\`u', 'ù'), (r'\`U', 'Ù'),
 	(r'\`o', 'ò'), (r'\`O', 'Ò'),
 	(r'\^o', 'ô'), (r'\^O', 'Ô'),
+	(r'\^a', 'â'), (r'\^A', 'Â'),
+	(r'\^e', 'ê'), (r'\^E', 'Ê'),
+	(r'\^i', 'î'), (r'\^I', 'Î'),
+	(r'\^u', 'û'), (r'\^U', 'Û'),
 	(r'\ss', 'ß'),
-	(r'\ae', 'æ'), (r'\AE', 'Æ'),
-	(r'{{', '{'), (r'}}', '}'))
+	(r'\%', '%'),
+	(r'\ae', 'æ'), (r'\AE', 'Æ'), (r'\aa', 'å'), (r'\AA', 'Å'), (r'\o', 'ø'), (r'\O', 'Ø'), # swedish, danish, norwegian
+	(r'\c{c}', 'ç'), (r'\c{C}', 'Ç'),  # french, portuguese, etc
+	(r'\~a', 'ã'), (r'\~A', 'Ã'),  # portuguese
+	(r'\~o', 'õ'), (r'\~O', 'Õ'),
+	(r'{\i}', 'ı'), (r'\.{I}', 'İ'), ('\\u{g}', 'ğ'), ('\\u{G}', 'Ğ'), (r'\c{s}', 'ş'), (r'\c{S}', 'Ş'))  # turkish
+
 
 def parse(string):
 	"""
 	Takes a string in BibTex format and returns a list of BibTex entries, where
 	each entry is a dictionary containing the entries' key-value pairs.
-
 	@type  string: string
 	@param string: bibliography in BibTex format
-
 	@rtype: list
 	@return: a list of dictionaries representing a bibliography
 	"""
@@ -53,17 +61,20 @@ def parse(string):
 
 	# replace special characters
 	for key, value in special_chars:
-		string = string.replace(key.decode('utf-8'), value.decode('utf-8'))
+		string = string.replace(key, value)
+	string = re.sub(r'\\[cuHvs]{?([a-zA-Z])}?', r'\1', string)
 
 	# split into BibTex entries
-	entries = re.findall(r'(?u)@(\w+)[ \t]?{[ \t]*([^,\s]*)[ \t]*,?\s*((?:[^=,\s]+\s*\=\s*(?:"[^"]*"|{(?:[^{}]*|{[^{}]*})*}|[^,}]*),?\s*?)+)\s*}', string)
+	entries = re.findall(
+		r'(?u)@(\w+)[ \t]?{[ \t]*([^,\s]*)[ \t]*,?\s*((?:[^=,\s]+\s*\=\s*(?:"[^"]*"|{(?:[^{}]*|{[^{}]*})*}|[^,}]*),?\s*?)+)\s*}',
+		string)
 
 	for entry in entries:
 		# parse entry
 		pairs = re.findall(r'(?u)([^=,\s]+)\s*\=\s*("[^"]*"|{(?:[^{}]*|{[^{}]*})*}|[^,]*)', entry[2])
 
 		# add to bibliography
-		bib.append({u'type': entry[0].lower(), u'key': entry[1]})
+		bib.append({'type': entry[0].lower(), 'key': entry[1]})
 
 		for key, value in pairs:
 			# post-process key and value
@@ -74,6 +85,12 @@ def parse(string):
 				value = value[1:-1]
 			if key not in ['booktitle', 'title']:
 				value = value.replace('}', '').replace('{', '')
+			if key in ['pages']:
+				value = value.replace(" ","").replace("--","-")
+			else:
+				if value.startswith('{') and value.endswith('}'):
+					value = value[1:]
+					value = value[:-1]
 			value = value.strip()
 			value = re.sub(r'\s+', ' ', value)
 

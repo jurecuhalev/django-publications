@@ -59,8 +59,12 @@ def import_bibtex(request):
 			try:
 				# save publications
 				for publication in publications:
+					publication.user = request.user
+					if not publication.external:
+						publication.external = False
+
 					publication.save()
-			except:
+			except Exception as e:
 				msg = 'Some error occured during saving of publications.'
 			else:
 				if len(publications) > 1:
