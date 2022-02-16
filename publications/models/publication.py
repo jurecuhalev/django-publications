@@ -12,6 +12,7 @@ from django.conf import settings
 from publications.fields import PagesField
 from publications.models import Type, List
 from string import ascii_uppercase
+from django.contrib.auth.models import User
 
 if 'django.contrib.sites' in settings.INSTALLED_APPS:
 	from django.contrib.sites.models import Site
@@ -58,6 +59,12 @@ class Publication(models.Model):
 			12: 'Dec'
 		}
 
+	STATE_CHOICES = (
+		(0, 'Needs review'),
+		(1, 'Reviewed and published'),
+		(2, 'Removed')
+	)
+
 	type = models.ForeignKey(Type, on_delete=models.CASCADE)
 	citekey = models.CharField(max_length=512, blank=True, null=True,
 		help_text='BibTex citation key. Leave blank if unsure.')
@@ -90,6 +97,27 @@ class Publication(models.Model):
 	isbn = models.CharField(max_length=32, verbose_name="ISBN", blank=True,
 		help_text='Only for a book.') # A-B-C-D
 	lists = models.ManyToManyField(List, blank=True)
+
+	# GGP specific import fields
+	timestamp = models.DateField(auto_now_add=True)
+	owner = models.CharField(max_length=64, blank=True, null=True, default='admin')
+	owner_user = models.ForeignKey(User, blank=True, null=True, related_name='publication_owner_user')
+	user = models.ForeignKey(User, blank=True, null=True, related_name="publication_user")
+
+	language = models.CharField(max_length=255, blank=True)
+	editor = models.CharField(max_length=255, blank=True)
+	address = models.CharField(max_length=255, blank=True, verbose_name=u'Published address')
+	organization = models.CharField(max_length=255, blank=True)
+	series = models.CharField(max_length=255, blank=True)
+	edition = models.CharField(max_length=255, blank=True)
+	chapter = models.CharField(max_length=255, blank=True)
+
+	school = models.CharField(max_length=255, blank=True)
+	howpublished = models.CharField(max_length=255, blank=True, verbose_name=u'How is it published?')
+	issn = models.CharField(max_length=255, blank=True)
+	comment = models.TextField(blank=True)
+
+	state = models.IntegerField(max_length=5, blank=True, null=True, default=0, choices=STATE_CHOICES)
 
 	def __init__(self, *args, **kwargs):
 		models.Model.__init__(self, *args, **kwargs)

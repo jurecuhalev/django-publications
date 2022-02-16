@@ -41,6 +41,9 @@ class PublicationAdmin(admin.ModelAdmin):
 			('image', 'thumbnail')}),
 		(None, {'fields':
 			('lists',)}),
+		('GGP Specific fields', {'fields':
+			('owner', 'language', 'editor', 'address', 'organization', 'school', 'chapter', 'howpublished',
+			 'issn', 'comment', 'series', 'edition', 'user')}),
 	)
 	inlines = [CustomLinkInline, CustomFileInline]
 
