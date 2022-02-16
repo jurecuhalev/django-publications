@@ -12,7 +12,6 @@ from django.conf import settings
 from publications.fields import PagesField
 from publications.models import Type, List
 from string import ascii_uppercase
-from django.contrib.auth.models import User
 
 if 'django.contrib.sites' in settings.INSTALLED_APPS:
 	from django.contrib.sites.models import Site
@@ -108,6 +107,8 @@ class Publication(models.Model):
 	editor = models.CharField(max_length=255, blank=True)
 	address = models.CharField(max_length=255, blank=True, verbose_name=u'Published address')
 	organization = models.CharField(max_length=255, blank=True)
+	volume = models.CharField(max_length=255, blank=True)
+	number = models.CharField(max_length=255, blank=True)
 	series = models.CharField(max_length=255, blank=True)
 	edition = models.CharField(max_length=255, blank=True)
 	chapter = models.CharField(max_length=255, blank=True)
