@@ -398,3 +398,6 @@ class Publication(models.Model):
 		name = name.replace(u'ü', u'ue')
 		name = name.replace(u'ß', u'ss')
 		return name
+
+	def get_absolute_url(self):
+		return '/form/publications/%s/' % self.id
