@@ -12,6 +12,7 @@ from django.conf import settings
 from publications.fields import PagesField
 from publications.models import Type, List
 from string import ascii_uppercase
+from django.contrib.auth.models import User
 
 if 'django.contrib.sites' in settings.INSTALLED_APPS:
 	from django.contrib.sites.models import Site
@@ -118,7 +119,7 @@ class Publication(models.Model):
 	issn = models.CharField(max_length=255, blank=True)
 	comment = models.TextField(blank=True)
 
-	state = models.IntegerField(max_length=5, blank=True, null=True, default=0, choices=STATE_CHOICES)
+	state = models.IntegerField(blank=True, null=True, default=0, choices=STATE_CHOICES)
 
 	def __init__(self, *args, **kwargs):
 		models.Model.__init__(self, *args, **kwargs)

@@ -28,14 +28,6 @@ class Migration(migrations.Migration):
             name='type',
             options={'ordering': ('order',), 'verbose_name_plural': '  Types'},
         ),
-        migrations.RemoveField(
-            model_name='publication',
-            name='number',
-        ),
-        migrations.RemoveField(
-            model_name='publication',
-            name='volume',
-        ),
         migrations.AddField(
             model_name='publication',
             name='image',
