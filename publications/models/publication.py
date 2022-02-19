@@ -101,8 +101,8 @@ class Publication(models.Model):
 	# GGP specific import fields
 	timestamp = models.DateField(auto_now_add=True)
 	owner = models.CharField(max_length=64, blank=True, null=True, default='admin')
-	owner_user = models.ForeignKey(User, blank=True, null=True, related_name='publication_owner_user')
-	user = models.ForeignKey(User, blank=True, null=True, related_name="publication_user")
+	owner_user = models.ForeignKey(User, blank=True, null=True, related_name='publication_owner_user', on_delete=models.CASCADE)
+	user = models.ForeignKey(User, blank=True, null=True, related_name="publication_user", on_delete=models.CASCADE)
 
 	language = models.CharField(max_length=255, blank=True)
 	editor = models.CharField(max_length=255, blank=True)

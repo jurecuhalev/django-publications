@@ -231,6 +231,7 @@ class Migration(migrations.Migration):
                         blank=True,
                         to=settings.AUTH_USER_MODEL,
                         null=True,
+                        on_delete=models.CASCADE
                     ),
                 ),
             ],
@@ -274,7 +275,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name="publication",
             name="type",
-            field=models.ForeignKey(to="publications.Type"),
+            field=models.ForeignKey(to="publications.Type", on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name="publication",
@@ -284,16 +285,17 @@ class Migration(migrations.Migration):
                 blank=True,
                 to=settings.AUTH_USER_MODEL,
                 null=True,
+                on_delete=models.CASCADE,
             ),
         ),
         migrations.AddField(
             model_name="customlink",
             name="publication",
-            field=models.ForeignKey(to="publications.Publication"),
+            field=models.ForeignKey(to="publications.Publication", on_delete=models.CASCADE),
         ),
         migrations.AddField(
             model_name="customfile",
             name="publication",
-            field=models.ForeignKey(to="publications.Publication"),
+            field=models.ForeignKey(to="publications.Publication", on_delete=models.CASCADE),
         ),
     ]
