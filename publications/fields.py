@@ -8,7 +8,7 @@ from django.db import models
 
 class PagesWidget(widgets.MultiWidget):
 	def __init__(self, *args, **kwargs):
-		attrs = {'style': 'width: 40px; text-align: center;'}
+		attrs = {'style': 'width: 80px; text-align: center;'}
 		forms.widgets.MultiWidget.__init__(self,
 			[widgets.TextInput(attrs), widgets.TextInput(attrs)], *args, **kwargs)
 
