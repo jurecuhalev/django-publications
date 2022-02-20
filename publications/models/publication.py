@@ -145,6 +145,7 @@ class Publication(models.Model):
 		self.authors = self.authors.replace(',and ', ', ')
 		self.authors = self.authors.replace(' and ', ', ')
 		self.authors = self.authors.replace(';', ',')
+		self.authors = self.authors.replace("\\\'", '')
 
 		# list of authors
 		self.authors_list = [author.strip() for author in self.authors.split(',')]
