@@ -77,8 +77,6 @@ class Publication(models.Model):
 	book_title = models.CharField(max_length=256, blank=True)
 	publisher = models.CharField(max_length=256, blank=True)
 	institution = models.CharField(max_length=256, blank=True)
-	volume = models.IntegerField(blank=True, null=True)
-	number = models.IntegerField(blank=True, null=True, verbose_name='Issue number')
 	pages = PagesField(max_length=32, blank=True)
 	note = models.CharField(max_length=256, blank=True)
 	keywords = models.CharField(max_length=256, blank=True,
@@ -100,7 +98,7 @@ class Publication(models.Model):
 
 	# GGP specific import fields
 	timestamp = models.DateField(auto_now_add=True)
-	owner = models.CharField(max_length=64, blank=True, null=True, default='admin')
+	owner = models.CharField(max_length=64, blank=True, default='admin')
 	owner_user = models.ForeignKey(User, blank=True, null=True, related_name='publication_owner_user', on_delete=models.CASCADE)
 	user = models.ForeignKey(User, blank=True, null=True, related_name="publication_user", on_delete=models.CASCADE)
 
