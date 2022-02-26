@@ -130,7 +130,10 @@ class Publication(models.Model):
 		self.keywords = [s.strip().lower() for s in self.keywords.split(',')]
 		self.keywords = ', '.join(self.keywords).lower()
 
-		self._produce_author_lists()
+		# self._produce_author_lists()
+		self.authors = self.authors.replace("\\\'", '').strip()
+		self.authors_list = [self.authors]
+		self.authors_bibtex = self.authors
 
 
 	def _produce_author_lists(self):
